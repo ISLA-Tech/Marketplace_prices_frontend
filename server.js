@@ -30,13 +30,13 @@ app.post('/results', function(req, res, next) {
   //Get a queryId from the API
   axios.post('http://' + config.mp_prices_api.server + ":4224" + '/getqueryId', { SearchesList: queryJSON })
   .then(function (response) {
-    console.log(response.data);
+    console.log("/getqueryId response: " + response.data);
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
     if(response.data.Status){
       console.log("Bad data format!");
       res.sendFile('index.html', {root: 'static/html'});
     }else{
-      console.log("Scraper launched!");
+      console.log("QueryID Generated successfully");
       //HOW TO SEND QueryId TO THE FRONTEND
       queryId = response.data.QueryId;
     }
@@ -48,8 +48,22 @@ app.post('/results', function(req, res, next) {
   });
 
   //THEN LAUNCH THE Scraper
-  // api/launchscraper
-  //res.render('results', {QueryId: queryId});
+  axios.post('http://' + config.mp_prices_api.server + ":4224" + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
+  .then(function (response) {
+    console.log("/launchscraper response: " + response.data);
+    //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
+    if(response.data.Status == "Scraper launched"){
+      console.log("Scraper launched!");
+      res.render('results', {QueryId: queryId});
+    }else{
+      console.log("Scraper launch failure: " + response.data.Status);
+      res.sendFile('index.html', {root: 'static/html'});
+    }
+  })
+  .catch(function (error) {
+    console.log(error);
+    res.sendFile('index.html', {root: 'static/html'});
+  });
 
   return;
 })
