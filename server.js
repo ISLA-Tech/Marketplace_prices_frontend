@@ -30,7 +30,7 @@ app.post('/results', function(req, res, next) {
   //Get a queryId from the API
   axios.post('http://' + config.mp_prices_api.server + ":4224" + '/getqueryId', { SearchesList: queryJSON })
   .then(function (response) {
-    console.log("/getqueryId response: " + response.data);
+    console.log("/getqueryId response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
     if(response.data.Status){
       console.log("Bad data format!");
@@ -50,7 +50,7 @@ app.post('/results', function(req, res, next) {
   //THEN LAUNCH THE Scraper
   axios.post('http://' + config.mp_prices_api.server + ":4224" + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
   .then(function (response) {
-    console.log("/launchscraper response: " + response.data);
+    console.log("/launchscraper response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
     if(response.data.Status == "Scraper launched"){
       console.log("Scraper launched!");
