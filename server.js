@@ -28,7 +28,7 @@ app.post('/results', async function(req, res, next) {
 
   let queryId = "";
   //Get a queryId from the API
-  await axios.post('http://' + config.mp_prices_api.server + ":4224" + '/getqueryId', { SearchesList: queryJSON })
+  await axios.post('http://' + config.mp_prices_api.server + '/getqueryId', { SearchesList: queryJSON })
   .then(function (response) {
     console.log("/getqueryId response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
@@ -47,13 +47,13 @@ app.post('/results', async function(req, res, next) {
   });
 
   //THEN LAUNCH THE Scraper
-  await axios.post('http://' + config.mp_prices_api.server + ":4224" + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
+  await axios.post('http://' + config.mp_prices_api.server + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
   .then(function (response) {
     console.log("/launchscraper response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
     if(response.data.Status == "Scraper launched"){
       console.log("Scraper launched!");
-      res.render('results', {QueryId: queryId, API_Server: 'http://' + config.mp_prices_api.server + ":4224"});
+      res.render('results', {QueryId: queryId, API_Server: 'http://' + config.mp_prices_api.server});
     }else{
       console.log("Scraper launch failure: " + response.data.Status);
       res.sendFile('index.html', {root: 'static/html'});
