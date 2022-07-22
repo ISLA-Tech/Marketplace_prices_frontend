@@ -1,0 +1,58 @@
+/*
+thead{
+  backgroun-color: #aaa;
+}
+table,thead,td{
+  border: 1px solid;
+}
+
+tbody {
+    white-space: nowrap;
+}
+thead,
+td {
+    padding: 5px 10px;
+    border-top-width: 0;
+    border-left-width: 0;
+}
+*/
+table,
+thead,
+td {
+    border: 1px solid;
+}
+
+table {
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    overflow-x: auto;
+    border-spacing: 0;
+}
+
+tbody {
+    white-space: nowrap;
+}
+
+thead,
+td {
+    padding: 5px 10px;
+    border-top-width: 1;
+    border-left-width: 1;
+}
+
+thead {
+    position: sticky;
+    top: 2;
+    background: #fff;
+    vertical-align: bottom;
+}
+
+thead:last-child,
+td:last-child {
+    border-right-width: 1;
+}
+
+tr:last-child td {
+    border-bottom-width: 1;
+}
