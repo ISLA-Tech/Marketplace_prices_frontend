@@ -16,7 +16,7 @@ app.set('views', __dirname + '/static/html');
 app.use(Cors())
 app.use(Express.static('static'))
 
-app.post('/results', function(req, res, next) {
+app.post('/results', async function(req, res, next) {
   let query = '[' + req.body.queryInput + ']';
   let queryJSON = {};
   try{
@@ -28,7 +28,7 @@ app.post('/results', function(req, res, next) {
 
   let queryId = "";
   //Get a queryId from the API
-  axios.post('http://' + config.mp_prices_api.server + ":4224" + '/getqueryId', { SearchesList: queryJSON })
+  await axios.post('http://' + config.mp_prices_api.server + ":4224" + '/getqueryId', { SearchesList: queryJSON })
   .then(function (response) {
     console.log("/getqueryId response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
@@ -40,7 +40,6 @@ app.post('/results', function(req, res, next) {
       //HOW TO SEND QueryId TO THE FRONTEND
       queryId = response.data.QueryId;
     }
-
   })
   .catch(function (error) {
     console.log(error);
@@ -48,13 +47,13 @@ app.post('/results', function(req, res, next) {
   });
 
   //THEN LAUNCH THE Scraper
-  axios.post('http://' + config.mp_prices_api.server + ":4224" + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
+  await axios.post('http://' + config.mp_prices_api.server + ":4224" + '/launchscraper', { SearchesList: queryJSON, QueryId:  queryId})
   .then(function (response) {
     console.log("/launchscraper response: " + JSON.stringify(response.data));
     //IF bad arguments given in input (not compying with "..", ".." synthax) : redirect to index
     if(response.data.Status == "Scraper launched"){
       console.log("Scraper launched!");
-      res.render('results', {QueryId: queryId});
+      res.render('results', {QueryId: queryId, API_Server: 'http://' + config.mp_prices_api.server + ":4224"});
     }else{
       console.log("Scraper launch failure: " + response.data.Status);
       res.sendFile('index.html', {root: 'static/html'});
